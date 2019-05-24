@@ -9,7 +9,8 @@ class PostController extends Controller
 {
     public function index()
     {
-        $posts = Post::orderBy('created_at')->paginate(10);
+        $posts = Post::orderBy('created_at')->paginate(5);
+
         return view('post.index', compact('posts'));
     }
 
@@ -18,15 +19,20 @@ class PostController extends Controller
         return view('post.create');
     }
 
-    public function store(Request $request)
+    public function store(Request $request, Post $post)
     {
-        $post = Post::create($request->except(['post']));
+        Post::create([
+            'title' => $request->title,
+            'description' => $request->description
+        ]);
 
-        dd($request);
+        return redirect()->route('post.index');
     }
 
-    public function destroy(Post $post)
+    public function destroy(Post $post, $id)
     {
-        //
+        $post->destroy($id);
+
+        return redirect()->route('post.index');
     }
 }
